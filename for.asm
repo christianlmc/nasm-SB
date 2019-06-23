@@ -50,7 +50,7 @@ section   .text
 _start:   
     DO
         print_int rax
-    FOR 0, ne, 10, 1
+    FOR 0, ne, 100, 1
     return
 
 _printRAXDigit:

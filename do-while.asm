@@ -2,12 +2,12 @@ SYS_EXIT equ 60
 
 ;nasm -felf64 do-while.asm && ld do-while.o && ./a.out
 
-%macro DO 0             ;define uma macro chamada DO com 0 parametros
-%push do                ;joga o 'do' na pilha de contexto
-    jmp %$init_loop     ;jump para um label de contexto ($) 'init_loop'
-%$start_loop:           ;label de contexto ($) 'start_loop'
-    push rax            ;empilha o valor de rax para a pilha
-%endmacro               ;finaliza a macro
+%macro DO 0                 ;define uma macro chamada DO com 0 parametros
+    %push do                ;joga o 'do' na pilha de contexto
+        jmp %$init_loop     ;jump para um label de contexto ($) 'init_loop'
+    %$start_loop:           ;label de contexto ($) 'start_loop'
+        push rax            ;empilha o valor de rax para a pilha
+%endmacro                   ;finaliza a macro
 
 ;while (a < b)
 
@@ -48,10 +48,11 @@ section   .text
 _start:   
     mov rbx, 2
     mov rcx, 5
+    print_int rbx
     DO
-        print_int rbx
-        add rbx, 1
+        inc rbx
     WHILE rbx, l, rcx
+    print_int rbx
     return
 
 _printRAXDigit:
