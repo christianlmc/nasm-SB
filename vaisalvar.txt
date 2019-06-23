@@ -391,7 +391,7 @@ calling these macros is:
     ;code to do here
    WHILE variable, Cond, value
 It is perhaps easiest to illustrate this by comparing the macros with C code.
-    for( x = 0; x <= 100; x++) { SomeFunc() }
+    for( x = 0; x < 100; x++) { SomeFunc() }
 Equates to:
   DO
     call SomeFunc
