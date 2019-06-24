@@ -4,9 +4,9 @@ SYS_EXIT equ 60
 
 %macro DO 0                 ;define uma macro chamada DO com 0 parametros
     %push do                ;joga o 'do' na pilha de contexto
-        jmp %$init_loop     ;jump para um label de contexto ($) 'init_loop'
+        ;jmp %$init_loop     ;jump para um label de contexto ($) 'init_loop'
     %$start_loop:           ;label de contexto ($) 'start_loop'
-        push rax            ;empilha o valor de rax para a pilha
+    ;    push rax            ;empilha o valor de rax para a pilha
 %endmacro                   ;finaliza a macro
 
 ;while (a < b)
@@ -18,21 +18,23 @@ SYS_EXIT equ 60
 ;WHILE a, l, b
 %macro WHILE 3
     %ifctx do
-        pop rax
-        cmp rax, %3
+    ;    pop rax
+        cmp %1, %3
         j%-2 %%end_loop
         jmp %$start_loop
-        %$init_loop:
-            mov rax, %1
-            jmp %$start_loop
+        ;%$init_loop:
+            ;mov rax, %1
+        ;    jmp %$start_loop
         %%end_loop:
             %pop
     %endif
 %endmacro
 
 %macro print_int 1
+    push rax
     mov rax, %1
     call _printRAXDigit
+    pop rax
 %endmacro
 
 %macro return 0
@@ -46,16 +48,21 @@ global    _start
 section   .text
 
 _start:   
-    mov rbx, 2
-    mov rcx, 5
-    print_int rbx
+    mov rax, 2
+    mov rbx, 5
     DO
-        inc rbx
-    WHILE rbx, l, rcx
-    print_int rbx
+        inc rax
+        print_int rax
+
+    WHILE rax, l, rbx
     return
 
 _printRAXDigit:
+    push rax
+    push rdi
+    push rsi
+    push rdx
+
     add rax, 48
     mov [digit], al
     mov rax, 1
@@ -63,6 +70,11 @@ _printRAXDigit:
     mov rsi, digit
     mov rdx, 2
     syscall
+
+    pop rdx
+    pop rsi
+    pop rdi
+    pop rax
     ret
 
 section   .data

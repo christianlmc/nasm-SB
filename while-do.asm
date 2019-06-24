@@ -7,36 +7,26 @@ syscall
 %endmacro
 
 %macro print_int 1
+    push rax
     mov rax, %1
     call _printRAXDigit
+    pop rax
 %endmacro
 
 %macro WHILE 3
     %push while
     %ifctx while
     %$initloop:
-        push %1
-        push %3
-        pop rax
-        pop rbx 
-        cmp rax, rbx
-        jmp %$initloop
+        cmp %1, %3
         j%-2 %$endloop
+
     %endif        
 %endmacro
-; stack = 
-; rbx = 0
-; rcx = 5
 
-;WHILE %1, %2, %3
-; algumacoisa
-;DO 
 %macro DO 0
     %ifctx while
     jmp %$initloop
     %$endloop:
-        pop rax
-        pop rax
         %pop
     %endif
 %endmacro
@@ -55,6 +45,11 @@ _start:
     return
 
 _printRAXDigit:
+    push rax
+    push rdi
+    push rsi
+    push rdx
+
     add rax, 48
     mov [digit], al
     mov rax, 1
@@ -62,7 +57,12 @@ _printRAXDigit:
     mov rsi, digit
     mov rdx, 2
     syscall
+
+    pop rdx
+    pop rsi
+    pop rdi
+    pop rax
     ret
 section   .data
-message:  db        "Hello, World", 10      ; note the newline at the end
+message:  db        "Hello, World", 10  
 digit: db 0,10
