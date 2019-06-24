@@ -17,24 +17,24 @@ syscall
 
 %macro SWITCH 1
 %push switch            
-%assign __curr 1
+%assign next 1
     mov rax, %1
-    jmp %$loc %+ __curr
+    jmp %$loc %+ next
 %endmacro
 
 %macro CASE 1
 %ifctx switch
-    %$loc %+ __curr:
-    %assign __curr __curr+1
+    %$loc %+ next:
+    %assign next next+1
     mov rbx, %1
     cmp rax, rbx
-    jne %$loc %+ __curr
+    jne %$loc %+ next
 %endif
 %endmacro
 
 %macro DEFAULT 0
 %ifctx switch
-    %$loc %+ __curr:
+    %$loc %+ next:
 %endif
 %endmacro
 
