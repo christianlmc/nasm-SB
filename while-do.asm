@@ -1,16 +1,16 @@
 SYS_EXIT equ 60;
-;nasm -felf64 while-do.asm && ld while-do.o && ./a.out
+;nasm -felf while-do.asm && ld while-do.o && ./a.out
 %macro return 0
-mov       rax, SYS_EXIT           ; system call for exit
-xor       rdi, rdi                ; exit code 0 
+mov       eax, SYS_EXIT           ; system call for exit
+xor       edi, edi                ; exit code 0 
 syscall
 %endmacro
 
 %macro print_int 1
-    push rax
-    mov rax, %1
-    call _printRAXDigit
-    pop rax
+    push eax
+    mov eax, %1
+    call _printEAXDigit
+    pop eax
 %endmacro
 
 %macro WHILE 3
@@ -31,37 +31,52 @@ syscall
     %endif
 %endmacro
 
-global    _start
+global    while_do
 section   .text
-_start:
-    mov rax, 0
-    mov rbx, 5
+while_do:
+;Codigo copia
+    push ebp
+    mov ebp, esp
+    push ebx
+    push ecx
 
-    WHILE rax, l, rbx
-        inc rax
-        print_int rax
+    mov ebx, [ebp+8]
+    mov eax, ebx
+    cmp eax, 42
+    ;WHILE
+    pop ebx
+    mov esp, ebp
+    pop ebp
+;endcodigo 
+    mov eax, 0
+    mov ebx, 5
+    push ebp
+
+    WHILE eax, l, ebx
+        inc eax
+        print_int eax
     DO
 
     return
 
-_printRAXDigit:
-    push rax
-    push rdi
-    push rsi
-    push rdx
+_printEAXDigit:
+    push eax
+    push edi
+    push esi
+    push edx
 
-    add rax, 48
+    add eax, 48
     mov [digit], al
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, digit
-    mov rdx, 2
+    mov eax, 1
+    mov edi, 1
+    mov esi, digit
+    mov edx, 2
     syscall
 
-    pop rdx
-    pop rsi
-    pop rdi
-    pop rax
+    pop edx
+    pop esi
+    pop edi
+    pop eax
     ret
 section   .data
 message:  db        "Hello, World", 10  
